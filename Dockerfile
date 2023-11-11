@@ -1,5 +1,5 @@
 # 构建阶段
-FROM arm32v7/golang:1.19 AS buildState
+FROM arm32v7/golang:latest AS buildState
 LABEL maintainer="baiyz0825<byz0825@outlook.com>"
 ENV GO111MODULE=on \
     CGO_ENABLED=1 \
