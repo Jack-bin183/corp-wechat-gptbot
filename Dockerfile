@@ -1,5 +1,5 @@
 # 构建
-FROM golang:1.19 AS buildState
+FROM arm32v7/golang:1.19 AS buildState
 LABEL maintainer="baiyz0825<byz0825@outlook.com>"
 ENV GO111MODULE=on \
     CGO_ENABLED=1 \
@@ -10,8 +10,7 @@ COPY . /apps
 #RUN go install github.com/go-delve/delve/cmd/dlv@latest
 # go dlv调试
 #RUN cd /apps && go build  -gcflags="all=-N -l" -o bot
-RUN cd /apps && go build  -o bot
-
+RUN cd /apps && GOARCH=arm GOARM=7 go build -o bot
 # 打包
 FROM ubuntu:latest
 ENV DEBIAN_FRONTEND noninteractive
