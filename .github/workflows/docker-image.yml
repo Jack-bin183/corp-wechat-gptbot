@@ -1,0 +1,45 @@
+name: Build and Test
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        go-version: [1.19]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+      id: go
+
+    - name: Build and Test
+      run: |
+        cd your-app-directory
+        env GOARCH=arm GOARM=7 go build -o bot
+        go test ./...
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Set up Docker
+      uses: actions/setup-docker@v2
+
+    - name: Build Docker image
+      run: |
+        docker build -t your-image-name:latest .
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push your-image-name:latest
